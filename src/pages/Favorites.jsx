@@ -1,6 +1,7 @@
 import FavoritesOverview from "../components/favorites/FavoritesOverview";
 import FavoriteClothingSection from "../components/favorites/FavoriteClothingSection";
 import FavoriteOutfitSection from "../components/favorites/FavoriteOutfitSection";
+import Reveal from "../components/common/Reveal";
 
 export default function Favorites({
   items,
@@ -15,27 +16,40 @@ export default function Favorites({
 
   return (
     <div className="page-stack">
-      <section className="page-intro-row">
-        <div>
-          <p className="eyebrow">THE KEEPSAKES</p>
-          <h2 className="page-title">A collection of favourites.</h2>
-          <p className="section-description">Keep your most-loved pieces and looks close at hand.</p>
-        </div>
-      </section>
+      <Reveal>
+        <section className="page-intro-row editorial-page-intro">
+          <div>
+            <p className="eyebrow">THE KEEPSAKES · 04</p>
+            <h2 className="page-title">A collection worth keeping.</h2>
+            <p className="section-description">
+              Keep your most-loved pieces and looks close at hand.
+            </p>
+          </div>
+        </section>
+      </Reveal>
 
-      <FavoritesOverview clothingCount={favoriteItems.length} outfitCount={favoriteOutfits.length} />
+      <Reveal delay={70}>
+        <FavoritesOverview
+          clothingCount={favoriteItems.length}
+          outfitCount={favoriteOutfits.length}
+        />
+      </Reveal>
 
-      <FavoriteClothingSection
-        items={favoriteItems}
-        onDelete={onDelete}
-        onToggleFavorite={onToggleFavorite}
-      />
+      <Reveal delay={120}>
+        <FavoriteClothingSection
+          items={favoriteItems}
+          onDelete={onDelete}
+          onToggleFavorite={onToggleFavorite}
+        />
+      </Reveal>
 
-      <FavoriteOutfitSection
-        outfits={favoriteOutfits}
-        onDelete={onDeleteOutfit}
-        onToggleFavorite={onToggleOutfitFavorite}
-      />
+      <Reveal delay={170}>
+        <FavoriteOutfitSection
+          outfits={favoriteOutfits}
+          onDelete={onDeleteOutfit}
+          onToggleFavorite={onToggleOutfitFavorite}
+        />
+      </Reveal>
     </div>
   );
 }

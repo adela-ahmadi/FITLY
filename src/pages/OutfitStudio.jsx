@@ -3,16 +3,22 @@ import { Sparkles } from "lucide-react";
 import OutfitControls from "../components/outfit-studio/OutfitControls";
 import OutfitPreview from "../components/outfit-studio/OutfitPreview";
 import SavedLooks from "../components/outfit-studio/SavedLooks";
+import Reveal from "../components/common/Reveal";
 
 const requiredCategories = ["Tops", "Bottoms", "Shoes"];
 const optionalCategories = ["Outerwear", "Accessories"];
 
 function pickCandidate(candidates, selectedItems) {
-  const unused = candidates.filter((item) => !selectedItems.some((selected) => selected.id === item.id));
+  const unused = candidates.filter(
+    (item) => !selectedItems.some((selected) => selected.id === item.id),
+  );
   const pool = unused.length ? unused : candidates;
   if (!pool.length) return null;
+
   const favourites = pool.filter((item) => item.favorite);
-  const preferredPool = favourites.length && Math.random() > 0.45 ? favourites : pool;
+  const preferredPool =
+    favourites.length && Math.random() > 0.45 ? favourites : pool;
+
   return preferredPool[Math.floor(Math.random() * preferredPool.length)];
 }
 
@@ -22,7 +28,13 @@ function matchesSelection(item, season, occasion) {
   return seasonMatches && occasionMatches;
 }
 
-export default function OutfitStudio({ items, savedOutfits, onSaveOutfit, onDeleteOutfit, onToggleOutfitFavorite }) {
+export default function OutfitStudio({
+  items,
+  savedOutfits,
+  onSaveOutfit,
+  onDeleteOutfit,
+  onToggleOutfitFavorite,
+}) {
   const [occasion, setOccasion] = useState("Casual");
   const [season, setSeason] = useState("Summer");
   const [selectedItems, setSelectedItems] = useState([]);
@@ -39,12 +51,20 @@ export default function OutfitStudio({ items, savedOutfits, onSaveOutfit, onDele
     }
 
     const eligibleByCategory = (category) =>
-      items.filter((item) => item.category === category && matchesSelection(item, season, occasion));
+      items.filter(
+        (item) =>
+          item.category === category && matchesSelection(item, season, occasion),
+      );
 
-    const missingCategories = requiredCategories.filter((category) => eligibleByCategory(category).length === 0);
+    const missingCategories = requiredCategories.filter(
+      (category) => eligibleByCategory(category).length === 0,
+    );
+
     if (missingCategories.length) {
       setSelectedItems([]);
-      setNotice(`To create a complete ${occasion.toLowerCase()} look for ${season.toLowerCase()}, add a suitable ${missingCategories.join(", ").toLowerCase()}.`);
+      setNotice(
+        `To create a complete ${occasion.toLowerCase()} look for ${season.toLowerCase()}, add a suitable ${missingCategories.join(", ").toLowerCase()}.`,
+      );
       setNoticeType("warning");
       return;
     }
@@ -87,41 +107,51 @@ export default function OutfitStudio({ items, savedOutfits, onSaveOutfit, onDele
 
   return (
     <div className="page-stack">
-      <section className="studio-intro">
-        <div>
-          <p className="eyebrow">THE CREATIVE CORNER</p>
-          <h2 className="page-title">Your next look starts here.</h2>
-          <p className="section-description">Choose the mood. We’ll help you bring the pieces together.</p>
+      <Reveal>
+        <section className="studio-intro editorial-studio-intro">
+          <div>
+            <p className="eyebrow">THE CREATIVE CORNER · 03</p>
+            <h2 className="page-title">Compose your next look.</h2>
+            <p className="section-description">
+              Choose the mood. We’ll help you bring the pieces together.
+            </p>
+          </div>
+          <div className="studio-intro-mark" aria-hidden="true">
+            <Sparkles size={27} strokeWidth={1.5} />
+          </div>
+        </section>
+      </Reveal>
+
+      <Reveal delay={90}>
+        <div className="studio-layout">
+          <OutfitControls
+            occasion={occasion}
+            season={season}
+            onOccasionChange={setOccasion}
+            onSeasonChange={setSeason}
+            onGenerate={generateOutfit}
+            wardrobeCount={items.length}
+          />
+          <OutfitPreview
+            selectedItems={selectedItems}
+            season={season}
+            outfitName={outfitName}
+            onNameChange={setOutfitName}
+            onSave={saveOutfit}
+            onRegenerate={generateOutfit}
+            notice={notice}
+            noticeType={noticeType}
+          />
         </div>
-        <div className="studio-intro-mark" aria-hidden="true"><Sparkles size={27} strokeWidth={1.5} /></div>
-      </section>
+      </Reveal>
 
-      <div className="studio-layout">
-        <OutfitControls
-          occasion={occasion}
-          season={season}
-          onOccasionChange={setOccasion}
-          onSeasonChange={setSeason}
-          onGenerate={generateOutfit}
-          wardrobeCount={items.length}
+      <Reveal delay={150}>
+        <SavedLooks
+          outfits={savedOutfits}
+          onDelete={onDeleteOutfit}
+          onToggleFavorite={onToggleOutfitFavorite}
         />
-        <OutfitPreview
-          selectedItems={selectedItems}
-          season={season}
-          outfitName={outfitName}
-          onNameChange={setOutfitName}
-          onSave={saveOutfit}
-          onRegenerate={generateOutfit}
-          notice={notice}
-          noticeType={noticeType}
-        />
-      </div>
-
-      <SavedLooks
-        outfits={savedOutfits}
-        onDelete={onDeleteOutfit}
-        onToggleFavorite={onToggleOutfitFavorite}
-      />
+      </Reveal>
     </div>
   );
 }

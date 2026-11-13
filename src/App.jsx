@@ -1,25 +1,28 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import {
   BrowserRouter,
-  Routes,
-  Route,
   Navigate,
+  Route,
+  Routes,
   useLocation,
 } from "react-router-dom";
 
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
+import Footer from "./components/Footer";
+import ClothingForm from "./components/ClothingForm";
 
 import Dashboard from "./pages/Dashboard";
 import Wardrobe from "./pages/Wardrobe";
 import OutfitStudio from "./pages/OutfitStudio";
 import Favorites from "./pages/Favorites";
 
-import ClothingForm from "./components/ClothingForm";
 import initialClothes from "./data/initialClothes";
 
 import "./styles/global.css";
 import "./styles/layout.css";
+import "./styles/components.css";
+import "./styles/fitly-editorial.css";
 
 const PAGE_META = {
   "/": {
@@ -40,79 +43,89 @@ const PAGE_META = {
   },
 };
 
-function getStorage(key, fallback) {
+function readStorage(key, fallback) {
   try {
-    const saved = localStorage.getItem(key);
+    const saved = window.localStorage.getItem(key);
     return saved ? JSON.parse(saved) : fallback;
   } catch {
     return fallback;
   }
 }
 
+function writeStorage(key, value) {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // The UI remains usable if browser storage is unavailable or full.
+  }
+}
+
 function AppLayout() {
   const [items, setItems] = useState(() =>
-    getStorage("fitly-items", initialClothes),
+    readStorage("fitly-items", initialClothes),
   );
-
-  const [outfits, setOutfits] = useState(() => getStorage("fitly-outfits", []));
-
+  const [outfits, setOutfits] = useState(() =>
+    readStorage("fitly-outfits", []),
+  );
   const [showForm, setShowForm] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const location = useLocation();
-
   const page = PAGE_META[location.pathname] || PAGE_META["/"];
 
-  // Save wardrobe data
   useEffect(() => {
-    localStorage.setItem("fitly-items", JSON.stringify(items));
+    writeStorage("fitly-items", items);
   }, [items]);
 
-  // Save outfits
   useEffect(() => {
-    localStorage.setItem("fitly-outfits", JSON.stringify(outfits));
+    writeStorage("fitly-outfits", outfits);
   }, [outfits]);
 
-  // Add clothing
   const handleAdd = (newItem) => {
     const item = {
       ...newItem,
       id: `item-${Date.now()}`,
+      createdAt: new Date().toISOString(),
       favorite: false,
     };
 
-    setItems((prev) => [item, ...prev]);
+    setItems((current) => [item, ...current]);
     setShowForm(false);
   };
 
-  // Delete clothing
   const handleDelete = (id) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+    setItems((current) => current.filter((item) => item.id !== id));
   };
 
-  // Toggle favorite
   const handleToggleFavorite = (id) => {
-    setItems((prev) =>
-      prev.map((item) =>
+    setItems((current) =>
+      current.map((item) =>
         item.id === id ? { ...item, favorite: !item.favorite } : item,
       ),
     );
   };
 
-  // Save outfit
   const handleSaveOutfit = (outfitData) => {
     const outfit = {
       ...outfitData,
       id: `outfit-${Date.now()}`,
       createdAt: new Date().toISOString(),
+      favorite: false,
     };
 
-    setOutfits((prev) => [outfit, ...prev]);
+    setOutfits((current) => [outfit, ...current]);
   };
 
-  // Delete outfit
   const handleDeleteOutfit = (id) => {
-    setOutfits((prev) => prev.filter((outfit) => outfit.id !== id));
+    setOutfits((current) => current.filter((outfit) => outfit.id !== id));
+  };
+
+  const handleToggleOutfitFavorite = (id) => {
+    setOutfits((current) =>
+      current.map((outfit) =>
+        outfit.id === id ? { ...outfit, favorite: !outfit.favorite } : outfit,
+      ),
+    );
   };
 
   return (
@@ -124,7 +137,7 @@ function AppLayout() {
           <Header
             title={page.title}
             subtitle={page.subtitle}
-            onMenuClick={() => setSidebarOpen((prev) => !prev)}
+            onMenuClick={() => setSidebarOpen((current) => !current)}
           />
 
           <main className='page-content'>
@@ -136,10 +149,11 @@ function AppLayout() {
                     items={items}
                     outfits={outfits}
                     onAddClick={() => setShowForm(true)}
+                    onDelete={handleDelete}
+                    onToggleFavorite={handleToggleFavorite}
                   />
                 }
               />
-
               <Route
                 path='/wardrobe'
                 element={
@@ -151,7 +165,6 @@ function AppLayout() {
                   />
                 }
               />
-
               <Route
                 path='/outfit-studio'
                 element={
@@ -160,10 +173,10 @@ function AppLayout() {
                     savedOutfits={outfits}
                     onSaveOutfit={handleSaveOutfit}
                     onDeleteOutfit={handleDeleteOutfit}
+                    onToggleOutfitFavorite={handleToggleOutfitFavorite}
                   />
                 }
               />
-
               <Route
                 path='/favorites'
                 element={
@@ -173,18 +186,23 @@ function AppLayout() {
                     onDelete={handleDelete}
                     onToggleFavorite={handleToggleFavorite}
                     onDeleteOutfit={handleDeleteOutfit}
+                    onToggleOutfitFavorite={handleToggleOutfitFavorite}
                   />
                 }
               />
-
               <Route path='*' element={<Navigate to='/' replace />} />
             </Routes>
           </main>
+          <Footer />
         </div>
       </div>
 
       {showForm && (
-        <div className='modal-backdrop'>
+        <div
+          className='modal-backdrop'
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setShowForm(false);
+          }}>
           <ClothingForm onAdd={handleAdd} onClose={() => setShowForm(false)} />
         </div>
       )}
@@ -199,3 +217,4 @@ export default function App() {
     </BrowserRouter>
   );
 }
+
