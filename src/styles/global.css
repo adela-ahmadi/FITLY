@@ -1,0 +1,168 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap");
+
+:root {
+  color-scheme: light;
+
+  /* FITLY signature palette — adapted from the supplied Navy & Gold reference */
+  --color-navy: #0D1B2A;
+  --color-ocean: #1B365D;
+  --color-antique-gold: #C99A47;
+  --color-champagne: #E6C17A;
+  --color-ivory: #F5EBDD;
+
+  /* Existing component aliases retained to protect the current UI */
+  --color-espresso: var(--color-navy);
+  --color-espresso-soft: #14283D;
+  --color-cream: #FFFAF2;
+  --color-paper: #FBF6ED;
+  --color-olive: var(--color-ocean);
+  --color-olive-dark: #1B365D;
+  --color-olive-soft: #E8EDF2;
+  --color-gold: var(--color-antique-gold);
+  --color-gold-hi: var(--color-champagne);
+  --color-gold-soft: #F4E7CF;
+  --color-burgundy: #75464D;
+  --color-burgundy-soft: #F3E7E4;
+  --color-mocha: #C6A66D;
+  --color-taupe: #B8A78F;
+  --color-muted: #65707D;
+  --color-chocolate: var(--color-navy);
+  --color-border: #DED2C0;
+  --color-border-strong: #C9B99F;
+
+  --bg: var(--color-ivory);
+  --surface: var(--color-cream);
+  --primary: var(--color-navy);
+  --accent: var(--color-antique-gold);
+  --accent-hover: #A8792E;
+  --accent-soft: var(--color-gold-soft);
+  --text: var(--color-navy);
+  --text-muted: var(--color-muted);
+  --border: var(--color-border);
+
+  --font-display: "Playfair Display", "Times New Roman", Georgia, serif;
+  --font-sans: "DM Sans", "Segoe UI", Arial, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 18px;
+
+  --shadow-sm: 0 4px 15px rgba(13, 27, 42, 0.055);
+  --shadow-md: 0 13px 34px rgba(13, 27, 42, 0.11);
+  --shadow-lg: 0 26px 70px rgba(13, 27, 42, 0.2);
+
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out: cubic-bezier(0.2, 0.75, 0.25, 1);
+  --transition-fast: 160ms ease;
+  --transition-base: 260ms var(--ease);
+  --scroll-progress: 0;
+  --scroll-y: 0px;
+
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+  background: var(--color-ivory);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  color: var(--color-navy);
+  background:
+    radial-gradient(ellipse at 85% 0%, rgba(230, 193, 122, 0.12), transparent 34rem),
+    linear-gradient(180deg, #F8F1E6 0%, var(--color-ivory) 46%, #F3E9D9 100%);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.72;
+  letter-spacing: 0.005em;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  color: var(--color-navy);
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+}
+
+p {
+  margin: 0;
+}
+
+input,
+select,
+textarea {
+  color: var(--color-navy);
+}
+
+::selection {
+  color: var(--color-ivory);
+  background: var(--color-ocean);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-antique-gold);
+  outline-offset: 3px;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
