@@ -1,5 +1,4 @@
 import { ArrowUpRight, WandSparkles } from "lucide-react";
-import { WandSparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const heroImage =
